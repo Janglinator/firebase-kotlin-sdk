@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
@@ -99,6 +100,25 @@ kotlin {
         }
     }
 
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        useCommonJs()
+        nodejs {
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
+        }
+        browser {
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
+        }
+    }
+
     sourceSets {
         all {
             languageSettings.apply {
@@ -135,6 +155,12 @@ kotlin {
             }
         }
 
+        getByName("wasmJsMain") {
+            dependencies {
+                api(npm("firebase", "10.12.2"))
+            }
+        }
+
         getByName("jvmMain") {
             kotlin.srcDir("src/androidMain/kotlin")
         }
@@ -163,6 +189,12 @@ if (project.property("firebase-common.skipJvmTests") == "true") {
 if (project.property("firebase-common.skipJsTests") == "true") {
     tasks.forEach {
         if (it.name.contains("js", true) && it.name.contains("test", true)) { it.enabled = false }
+    }
+}
+
+if (project.property("firebase-common.skipWasmJsTests") == "true") {
+    tasks.forEach {
+        if (it.name.contains("wasmJs", true) && it.name.contains("test", true)) { it.enabled = false }
     }
 }
 

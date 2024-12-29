@@ -85,6 +85,12 @@ kotlin {
         browser()
     }
 
+    wasmJs {
+        useCommonJs()
+        nodejs()
+        browser()
+    }
+
     sourceSets {
         all {
             languageSettings.apply {
@@ -109,6 +115,13 @@ kotlin {
         getByName("jsMain") {
             dependencies {
                 implementation(kotlin("test-js"))
+            }
+        }
+
+        getByName("wasmJsMain") {
+            dependencies {
+//                implementation(kotlin("test-js"))
+                implementation(libs.kotlinx.serialization.json)
             }
         }
 
