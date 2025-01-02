@@ -10,7 +10,7 @@ public external fun getApp(name: String = definedExternally): FirebaseApp
 
 public external fun getApps(): JsArray<FirebaseApp>
 
-public external fun deleteApp(app: FirebaseApp): Promise<JsAny?>
+public external fun deleteApp(app: FirebaseApp): Promise<Nothing?>
 
 public external interface FirebaseApp: JsAny {
     public val automaticDataCollectionEnabled: Boolean

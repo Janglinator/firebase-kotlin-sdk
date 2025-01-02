@@ -17,6 +17,7 @@ class EmulatorJobsMatrix {
             "emulator_jobs_matrix.json" to getEmulatorTaskList(rootProject = rootProject),
             "ios_test_jobs_matrix.json" to getIosTestTaskList(rootProject = rootProject),
             "js_test_jobs_matrix.json" to getJsTestTaskList(rootProject = rootProject),
+            "wasm_js_test_jobs_matrix.json" to getWasmJsTestTaskList(rootProject = rootProject),
             "jvm_test_jobs_matrix.json" to getJvmTestTaskList(rootProject = rootProject)
         )
             .mapValues { entry -> entry.value.map { it.joinToString(separator = " ") } }
@@ -51,6 +52,14 @@ class EmulatorJobsMatrix {
                     (rootProject.property("${subProject.name}.skipJsTests") == "true").not()
         }.map { subProject ->
             "${subProject.path}:jsTest"
+        }.map { listOf("cleanTest", it) }
+
+    fun getWasmJsTestTaskList(rootProject: Project): List<List<String>> =
+        rootProject.subprojects.filter { subProject ->
+            subProject.name == "test-utils" ||
+                    (rootProject.property("${subProject.name}.skipWasmJsTests") == "true").not()
+        }.map { subProject ->
+            "${subProject.path}:wasmJsTest"
         }.map { listOf("cleanTest", it) }
 
     fun getJvmTestTaskList(rootProject: Project): List<List<String>> =
